@@ -46,7 +46,7 @@ class TaskController {
         const { description } = request.all()
         const task = await Task.find(id)
         AuthorizationService.verifyPermission(task, user)
-        task.merge(request.only('description'))
+        task.merge(request.only(['description', 'completed']))
         await task.save()
         return task
     }
