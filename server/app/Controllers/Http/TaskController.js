@@ -29,6 +29,36 @@ class TaskController {
         await task.save()
         return task
     }
+
+    async destroy({ auth, request, params }){
+        const user = await auth.getUser()
+        const { id } = request.all()
+        const task = Task.find(id)
+        AuthorizationService.verifyPermission(task, user)
+        task.delete()
+        return task
+    }
+
+    async update({ auth, request, params }){
+        const user = await auth.getUser()
+        const id = params.id
+        
+        const { description } = request.all()
+        const task = await Task.find(id)
+        AuthorizationService.verifyPermission(task, user)
+        task.merge(request.only('description'))
+        await task.save()
+        return task
+    }
+
+    async destroy({ auth, request, params}){
+        const user = await auth.getUser()
+        const id = params.id
+        const task = await Task.find(id)
+        AuthorizationService.verifyPermission(task, user)
+        task.delete()
+        return task
+    }
 }
 
 module.exports = TaskController
